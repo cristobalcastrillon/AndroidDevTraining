@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">LifeCycleSandBox</string>
+    <string name="dialog_fragment">You have logged in successfully.</string>
+    <string name="ok">CONTINUE</string>
+</resources>
