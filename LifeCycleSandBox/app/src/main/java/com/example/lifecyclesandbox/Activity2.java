@@ -29,25 +29,25 @@ public class Activity2 extends AppCompatActivity {
 
     @Override
     protected void onRestart() {
-        super.onResume();
+        super.onRestart();
         Log.d(TAG, "onRestart(): " + Activity2.class.getCanonicalName());
     }
 
     @Override
     protected void onPause() {
-        super.onResume();
+        super.onPause();
         Log.d(TAG, "onPause(): " + Activity2.class.getCanonicalName());
     }
 
     @Override
     protected void onStop() {
-        super.onResume();
+        super.onStop();
         Log.d(TAG, "onStop(): " + Activity2.class.getCanonicalName());
     }
 
     @Override
     protected void onDestroy() {
-        super.onResume();
+        super.onDestroy();
         Log.d(TAG, "onDestroy(): " + Activity2.class.getCanonicalName());
     }
 }
