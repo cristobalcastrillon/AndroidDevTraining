@@ -24,6 +24,7 @@ class Fragment2 : DialogFragment() {
 
     private fun onContinueButtonClicked(view: View?) {
         val intentActivity2 = Intent(this.context, MovieListActivity::class.java)
+        Log.d("onContinueButtonClicked", Fragment2::class.java.canonicalName)
         startActivity(intentActivity2)
     }
 

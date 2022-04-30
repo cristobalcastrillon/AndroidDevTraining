@@ -1,5 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE resources [
+    <!ENTITY tmdb_dev_api_key "f70b04499b4fa4ac8d914250b96ac550">
+    ]>
 <resources>
     <string name="app_name">LifeCycleSandBox</string>
     <string name="dialog_fragment">You have logged in successfully.</string>
     <string name="ok">CONTINUE</string>
+
+    <!-- TMDB Web API Resources -->
+    <string name="tmdb_get_popular_movies">https://api.themoviedb.org/3/movie/popular&amp;api_key=&tmdb_dev_api_key;&amp;language=en-US&amp;page=1</string>
 </resources>

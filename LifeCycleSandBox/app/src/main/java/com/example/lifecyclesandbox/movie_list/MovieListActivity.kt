@@ -8,32 +8,23 @@ import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.lifecyclesandbox.R
+import com.example.lifecyclesandbox.login.Fragment1
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 class MovieListActivity : AppCompatActivity() {
-    private val movieList = arrayMovieList()
-    private var recyclerView: RecyclerView? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_2)
-        recyclerView = findViewById(R.id.movieListRecyclerView)
         Log.d(TAG, "onCreate(): " + MovieListActivity::class.java.canonicalName)
-        setAdapter()
-    }
-
-    private fun setAdapter() {
-        lifecycleScope.launch {
-            withContext(Dispatchers.IO) {
-                val adapter = MoviesAdapter(movieList)
-                val layoutManager: RecyclerView.LayoutManager = LinearLayoutManager(applicationContext)
-                recyclerView?.layoutManager = layoutManager
-                recyclerView?.itemAnimator = DefaultItemAnimator()
-                recyclerView?.adapter = adapter
-            }
+        if (savedInstanceState == null) {
+            supportFragmentManager.beginTransaction()
+                    .setReorderingAllowed(true)
+                    .add(R.id.movie_list_fragment_container_view, PopularMoviesFragment::class.java, null)
+                    .commit()
         }
+        setContentView(R.layout.movie_list_activity)
     }
 
     override fun onStart() {
@@ -66,21 +57,7 @@ class MovieListActivity : AppCompatActivity() {
         Log.d(TAG, "onDestroy(): " + MovieListActivity::class.java.canonicalName)
     }
 
-    private fun arrayMovieList(): ArrayList<Movie> {
-        // TODO: Fix
-        val movieList = ArrayList<Movie>()
-        movieList.add(Movie("Star Wars"))
-        movieList.add(Movie("El Padrino"))
-        movieList.add(Movie("The Matrix"))
-        return movieList
-    }
-
-    private fun fetchMovieData(): Movie? {
-        // TODO: fetch data from the API
-        return null
-    }
-
     companion object {
-        private const val TAG = "Activity_2"
+        private const val TAG = "MovieListActivity"
     }
 }
