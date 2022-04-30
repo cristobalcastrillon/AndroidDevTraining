@@ -8,7 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import java.util.ArrayList
 
-class MoviesAdapter(private val movieList: ArrayList<Movie>) : RecyclerView.Adapter<MoviesAdapter.ViewHolder>() {
+class MoviesAdapter(private val movieList: MutableList<Movie>) : RecyclerView.Adapter<MoviesAdapter.ViewHolder>() {
 
     inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val movieTitleText: TextView = view.findViewById(R.id.movie_title_textView)
@@ -20,11 +20,17 @@ class MoviesAdapter(private val movieList: ArrayList<Movie>) : RecyclerView.Adap
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val movieTitle = movieList[position].movieTitle
+        val movieTitle = movieList[position].title
         holder.movieTitleText.text = movieTitle
     }
 
     override fun getItemCount(): Int {
         return movieList.size
+    }
+
+    fun updateMovieList(popularMovieList: List<Movie>) {
+        movieList.clear()
+        movieList.addAll(popularMovieList)
+        notifyDataSetChanged()
     }
 }

@@ -3,20 +3,13 @@ package com.example.lifecyclesandbox.movie_list
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.lifecycleScope
-import androidx.recyclerview.widget.DefaultItemAnimator
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.example.lifecyclesandbox.R
-import com.example.lifecyclesandbox.login.Fragment1
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 class MovieListActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setContentView(R.layout.movie_list_activity)
         Log.d(TAG, "onCreate(): " + MovieListActivity::class.java.canonicalName)
         if (savedInstanceState == null) {
             supportFragmentManager.beginTransaction()
@@ -24,7 +17,6 @@ class MovieListActivity : AppCompatActivity() {
                     .add(R.id.movie_list_fragment_container_view, PopularMoviesFragment::class.java, null)
                     .commit()
         }
-        setContentView(R.layout.movie_list_activity)
     }
 
     override fun onStart() {
