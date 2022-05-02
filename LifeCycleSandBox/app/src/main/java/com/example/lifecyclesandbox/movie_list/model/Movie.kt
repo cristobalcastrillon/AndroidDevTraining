@@ -1,4 +1,4 @@
-package com.example.lifecyclesandbox.movie_list
+package com.example.lifecyclesandbox.movie_list.model
 
 import com.google.gson.annotations.SerializedName
 
@@ -12,5 +12,7 @@ data class Movie(
         @SerializedName("overview")
         val overview: String,
         @SerializedName("vote_average")
-        val voteAverage: Double
+        val voteAverage: Double,
+        @SerializedName("poster_path")
+        val posterPath: String
 )

@@ -1,6 +1,6 @@
 package com.example.lifecyclesandbox.network
 
-import com.example.lifecyclesandbox.movie_list.TMDb_Response
+import com.example.lifecyclesandbox.movie_list.model.TMDbResponse
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET
@@ -13,7 +13,7 @@ private val retrofit = Retrofit.Builder().addConverterFactory(GsonConverterFacto
 
 interface MovieApiService {
     @GET("movie/popular")
-    suspend fun getPopularMovies(@Query("api_key") apiKey : String = API_KEY): TMDb_Response
+    suspend fun getPopularMovies(@Query("api_key") apiKey : String = API_KEY): TMDbResponse
 }
 
 object MovieApi {

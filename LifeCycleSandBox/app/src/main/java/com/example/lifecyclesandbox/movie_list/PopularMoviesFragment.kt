@@ -23,8 +23,11 @@ class PopularMoviesFragment : Fragment(R.layout.popular_movies_fragment) {
         setAdapter()
         viewModel.popularMovies.observe(viewLifecycleOwner) { state ->
             when (state) {
+                // Error
                 is MovieListState.Failure -> Toast.makeText(context, "An error occurred.", Toast.LENGTH_SHORT).show()
+                // Loading
                 MovieListState.Loading -> Unit
+                // Success
                 is MovieListState.Success -> {
                     adapter.updateMovieList(state.popularMovieList)
                 }
