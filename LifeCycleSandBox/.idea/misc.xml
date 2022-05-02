@@ -10,7 +10,10 @@
         <entry key="app/src/main/res/layout/fragment_1.xml" value="0.20833333333333334" />
         <entry key="app/src/main/res/layout/fragment_2.xml" value="0.20380434782608695" />
         <entry key="app/src/main/res/layout/list_items.xml" value="0.5" />
-        <entry key="app/src/main/res/layout/movie_list_item.xml" value="0.8128571428571428" />
+        <entry key="app/src/main/res/layout/login_fragment.xml" value="0.4036458333333333" />
+        <entry key="app/src/main/res/layout/movie_detail_activity.xml" value="0.4036458333333333" />
+        <entry key="app/src/main/res/layout/movie_detail_fragment.xml" value="0.4036458333333333" />
+        <entry key="app/src/main/res/layout/movie_list_item.xml" value="0.5893719806763285" />
         <entry key="app/src/main/res/layout/movie_lists_activity.xml" value="0.4036458333333333" />
         <entry key="app/src/main/res/layout/popular_movies_fragment.xml" value="0.4036458333333333" />
       </map>

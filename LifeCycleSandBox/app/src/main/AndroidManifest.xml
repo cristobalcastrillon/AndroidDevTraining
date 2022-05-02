@@ -22,6 +22,9 @@
         <activity
             android:name=".movie_list.MovieListActivity"  android:exported="false">
         </activity>
+        <activity
+            android:name=".movie_detail.MovieDetailActivity" android:exported="false">
+        </activity>
     </application>
 
 </manifest>

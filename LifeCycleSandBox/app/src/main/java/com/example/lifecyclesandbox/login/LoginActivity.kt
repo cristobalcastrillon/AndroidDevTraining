@@ -5,16 +5,16 @@ import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 
-class LoginActivity : AppCompatActivity(R.layout.activity_1) {
+class LoginActivity : AppCompatActivity(R.layout.login_activity) {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         if (savedInstanceState == null) {
             supportFragmentManager.beginTransaction()
                     .setReorderingAllowed(true)
-                    .add(R.id.activity_1_fragment_container_view, Fragment1::class.java, null)
+                    .add(R.id.activity_1_fragment_container_view, LoginFragment::class.java, null)
                     .commit()
         }
-        setContentView(R.layout.activity_1)
+        setContentView(R.layout.login_activity)
         Log.d(TAG, "onCreate(): " + LoginActivity::class.java.canonicalName)
     }
 

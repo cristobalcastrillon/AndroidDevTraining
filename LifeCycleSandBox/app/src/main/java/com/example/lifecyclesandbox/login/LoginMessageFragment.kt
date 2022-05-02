@@ -11,12 +11,12 @@ import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
 import com.example.lifecyclesandbox.movie_list.MovieListActivity
 
-class Fragment2 : DialogFragment() {
+class LoginMessageFragment : DialogFragment() {
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         return AlertDialog.Builder(requireContext())
                 .setMessage(getString(R.string.dialog_fragment))
                 .setPositiveButton(getString(R.string.ok)) { dialog: DialogInterface?, which: Int ->
-                    Log.d(TAG, Fragment2::class.java.canonicalName)
+                    Log.d(TAG, LoginMessageFragment::class.java.canonicalName)
                     onContinueButtonClicked(this.view)
                 }
                 .create()
@@ -24,7 +24,7 @@ class Fragment2 : DialogFragment() {
 
     private fun onContinueButtonClicked(view: View?) {
         val intentActivity2 = Intent(this.context, MovieListActivity::class.java)
-        Log.d("onContinueButtonClicked", Fragment2::class.java.canonicalName)
+        Log.d("onContinueButtonClicked", LoginMessageFragment::class.java.canonicalName)
         startActivity(intentActivity2)
     }
 

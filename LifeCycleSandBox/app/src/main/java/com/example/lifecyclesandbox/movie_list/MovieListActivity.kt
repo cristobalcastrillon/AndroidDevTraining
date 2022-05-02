@@ -10,7 +10,10 @@ class MovieListActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.movie_list_activity)
+
+        // Debug Logging...
         Log.d(TAG, "onCreate(): " + MovieListActivity::class.java.canonicalName)
+
         if (savedInstanceState == null) {
             supportFragmentManager.beginTransaction()
                     .setReorderingAllowed(true)
