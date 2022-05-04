@@ -22,9 +22,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="10dp"
+        android:layout_marginTop="4dp"
         android:text="TextView"
         android:textAlignment="textStart"
         android:textStyle="bold"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toEndOf="@+id/movie_poster_image_view"
         app:layout_constraintTop_toTopOf="@+id/movie_poster_image_view" />
 
@@ -69,5 +71,19 @@
         app:layout_constraintTop_toBottomOf="@+id/movie_rating"
         app:layout_constraintVertical_bias="1.0"
         tools:ignore="MissingConstraints" />
+
+    <ImageButton
+        android:id="@+id/favorite"
+        android:layout_width="wrap_content"
+        android:layout_height="fill_parent"
+        android:background="#00ffffff"
+        android:onClick="onToggleStar"
+        android:src="@drawable/star"
+        app:layout_constraintBottom_toTopOf="@+id/movie_overview_text_view"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.801"
+        app:layout_constraintStart_toEndOf="@+id/movie_rating"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.745" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,4 +1,4 @@
-package com.example.lifecyclesandbox.movie_list
+package com.example.lifecyclesandbox.movie_list.shared
 
 import android.view.LayoutInflater
 import android.view.View
@@ -9,15 +9,14 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.lifecyclesandbox.R
 import com.example.lifecyclesandbox.movie_list.MovieListViewModel
-import com.example.lifecyclesandbox.movie_list.model.Movie
 import com.example.lifecyclesandbox.network.IMAGE_BASE_URL
 import com.squareup.picasso.Picasso
 
-class MovieListAdapter(
-    private val movieList: MutableList<Movie>,
+class MovieSharedListAdapter(
+    private val movieList: MutableList<MovieListViewModel.MovieUI>,
     private val onMovieListener: OnMovieListener,
     private val onFavListener: OnFavListener
-) : RecyclerView.Adapter<MovieListAdapter.ViewHolder>() {
+) : RecyclerView.Adapter<MovieSharedListAdapter.ViewHolder>() {
 
     inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val movieTitleText: TextView = view.findViewById(R.id.movie_title_text_view)
@@ -45,12 +44,26 @@ class MovieListAdapter(
         holder.movieOverviewText.text = movieOverview
         holder.movieRatingText.text = movieRating
 
+        if(movieList[position].favorite){
+            holder.favButton.setImageResource(R.drawable.ic_baseline_star_24)
+        }
+        else{
+            holder.favButton.setImageResource(R.drawable.ic_baseline_star_border_24)
+        }
+
         holder.itemView.setOnClickListener {
             onMovieListener.onMovieClicked(movieID)
         }
 
         holder.favButton.setOnClickListener {
-            onFavListener.onFavButtonClicked(movieID)
+            movieList[position].favorite = !movieList[position].favorite
+            if(movieList[position].favorite){
+                holder.favButton.setImageResource(R.drawable.ic_baseline_star_24)
+            }
+            else{
+                holder.favButton.setImageResource(R.drawable.ic_baseline_star_border_24)
+            }
+            onFavListener.onFavButtonClicked(movieList[position])
         }
     }
 
@@ -58,7 +71,7 @@ class MovieListAdapter(
         return movieList.size
     }
 
-    fun updateMovieList(popularMovieList: List<Movie>) {
+    fun updateMovieList(popularMovieList: List<MovieListViewModel.MovieUI>) {
         movieList.clear()
         movieList.addAll(popularMovieList)
         notifyDataSetChanged()
@@ -69,7 +82,7 @@ class MovieListAdapter(
     }
 
     interface OnFavListener {
-        fun onFavButtonClicked(movieID: Long)
+        fun onFavButtonClicked(movieUI: MovieListViewModel.MovieUI)
     }
 
 }

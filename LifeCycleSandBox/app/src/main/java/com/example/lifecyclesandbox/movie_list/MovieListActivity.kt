@@ -3,6 +3,7 @@ package com.example.lifecyclesandbox.movie_list
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.viewpager2.widget.ViewPager2
 import com.example.lifecyclesandbox.R
@@ -14,14 +15,14 @@ class MovieListActivity : AppCompatActivity() {
     private lateinit var movieListCollectionAdapter: MovieListCollectionAdapter
     private lateinit var viewPager: ViewPager2
     private val NUMBER_OF_PAGES = 2
+    private val movieListViewModel : MovieListViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         supportActionBar?.hide()
         setContentView(R.layout.movie_list_activity)
 
-        // Debug Logging...
-        Log.d(TAG, "onCreate(): " + MovieListActivity::class.java.canonicalName)
+        // TODO: Find out why pages are behaving like that (Favorite loads up info. loaded on Popular fragment, but does not update whenever info displayed on Popular changes).
 
         // ViewPager
         movieListCollectionAdapter = MovieListCollectionAdapter(this, NUMBER_OF_PAGES)

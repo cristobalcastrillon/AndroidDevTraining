@@ -5,18 +5,25 @@ import android.os.Bundle
 import android.view.View
 import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
+import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.lifecyclesandbox.R
 import com.example.lifecyclesandbox.movie_detail.MovieDetailActivity
+import com.example.lifecyclesandbox.movie_list.shared.MovieSharedListAdapter
+import com.example.lifecyclesandbox.movie_list.shared.MovieSharedListState
 
 class PopularMovieListFragment : Fragment(R.layout.movie_list_fragment),
-    MovieListAdapter.OnMovieListener {
-    private val viewModelPopular: PopularMovieListViewModel by viewModels()
+    MovieSharedListAdapter.OnMovieListener,
+    MovieSharedListAdapter.OnFavListener {
+
+    // GET Request to TMDb
+    // private val viewModelPopular: PopularMovieListViewModel by viewModels()
+
+    private val viewModelPopular : MovieListViewModel by activityViewModels()
     private lateinit var recyclerView: RecyclerView
-    private val adapter = MovieListAdapter(mutableListOf(), this)
+    private val adapter = MovieSharedListAdapter(mutableListOf(), this, this)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -25,6 +32,8 @@ class PopularMovieListFragment : Fragment(R.layout.movie_list_fragment),
         recyclerView = view.findViewById(R.id.movie_list_recycler_view)
         setAdapter()
 
+        // GET Request to TMDb
+        /*
         viewModelPopular.popularMovies.observe(viewLifecycleOwner) { state ->
             when (state) {
                 // Error
@@ -37,6 +46,24 @@ class PopularMovieListFragment : Fragment(R.layout.movie_list_fragment),
                 MovieListState.Loading -> Unit
                 // Success
                 is MovieListState.Success -> {
+                    adapter.updateMovieList(state.movieList)
+                }
+            }
+        }
+        */
+
+        viewModelPopular.movies.observe(viewLifecycleOwner) { state ->
+            when (state) {
+                // Error
+                is MovieSharedListState.Failure -> Toast.makeText(
+                    context,
+                    "An error occurred.",
+                    Toast.LENGTH_SHORT
+                ).show()
+                // Loading
+                MovieSharedListState.Loading -> Unit
+                // Success
+                is MovieSharedListState.Success -> {
                     adapter.updateMovieList(state.movieList)
                 }
             }
@@ -55,5 +82,15 @@ class PopularMovieListFragment : Fragment(R.layout.movie_list_fragment),
             putExtra(Intent.EXTRA_TEXT, movieID.toString())
         }
         startActivity(movieDetailIntent)
+    }
+
+    override fun onFavButtonClicked(movieUI: MovieListViewModel.MovieUI) {
+        // TODO("Not yet implemented")
+        if(movieUI.favorite){
+            // addToFavoriteMovies()
+        }
+        else{
+            // removeFromFavoriteMovies()
+        }
     }
 }

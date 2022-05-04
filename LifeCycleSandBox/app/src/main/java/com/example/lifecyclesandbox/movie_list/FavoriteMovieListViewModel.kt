@@ -20,10 +20,10 @@ class FavoriteMovieListViewModel : ViewModel() {
      * Load popular movies upon initialization so the movie list can be displayed immediately
      */
     init {
-        loadPopularMovies()
+        loadFavoriteMovies()
     }
 
-    private fun loadPopularMovies() {
+    private fun loadFavoriteMovies() {
         // Fetch movies from TMDb
         viewModelScope.launch {
             try {
