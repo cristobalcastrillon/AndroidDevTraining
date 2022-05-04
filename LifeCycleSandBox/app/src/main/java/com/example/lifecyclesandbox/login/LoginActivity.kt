@@ -8,6 +8,7 @@ import androidx.appcompat.app.AppCompatActivity
 class LoginActivity : AppCompatActivity(R.layout.login_activity) {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        supportActionBar?.hide()
         if (savedInstanceState == null) {
             supportFragmentManager.beginTransaction()
                     .setReorderingAllowed(true)

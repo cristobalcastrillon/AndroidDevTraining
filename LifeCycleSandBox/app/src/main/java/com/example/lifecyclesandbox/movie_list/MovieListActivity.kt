@@ -6,6 +6,8 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.viewpager2.widget.ViewPager2
 import com.example.lifecyclesandbox.R
+import com.google.android.material.tabs.TabLayout
+import com.google.android.material.tabs.TabLayoutMediator
 
 class MovieListActivity : AppCompatActivity() {
 
@@ -15,6 +17,7 @@ class MovieListActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        supportActionBar?.hide()
         setContentView(R.layout.movie_list_activity)
 
         // Debug Logging...
@@ -24,6 +27,15 @@ class MovieListActivity : AppCompatActivity() {
         movieListCollectionAdapter = MovieListCollectionAdapter(this, NUMBER_OF_PAGES)
         viewPager = this.findViewById(R.id.pager)
         viewPager.adapter = movieListCollectionAdapter
+
+        // Tab titles
+        val tabTitles = arrayOf("popular", "favorite")
+
+        val tabLayout = findViewById<TabLayout>(R.id.tab_layout)
+        TabLayoutMediator(tabLayout, viewPager) { tab, position ->
+            //To get the first name of doppelganger celebrities
+            tab.text = tabTitles[position]
+        }.attach()
     }
 
     override fun onStart() {

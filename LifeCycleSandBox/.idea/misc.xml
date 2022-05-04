@@ -5,6 +5,7 @@
       <map>
         <entry key="../../../../../layout/custom_preview.xml" value="0.20520833333333333" />
         <entry key="../../../layout/custom_preview.xml" value="0.33697916666666666" />
+        <entry key="app/src/main/res/drawable/divider.xml" value="0.403" />
         <entry key="app/src/main/res/layout/activity_1.xml" value="0.33" />
         <entry key="app/src/main/res/layout/activity_2.xml" value="0.1" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.45" />
@@ -15,6 +16,7 @@
         <entry key="app/src/main/res/layout/login_fragment.xml" value="0.4036458333333333" />
         <entry key="app/src/main/res/layout/movie_detail_activity.xml" value="0.4036458333333333" />
         <entry key="app/src/main/res/layout/movie_detail_fragment.xml" value="0.4036458333333333" />
+        <entry key="app/src/main/res/layout/movie_list_activity.xml" value="0.3582427536231884" />
         <entry key="app/src/main/res/layout/movie_list_item.xml" value="0.5893719806763285" />
         <entry key="app/src/main/res/layout/movie_lists_activity.xml" value="0.4036458333333333" />
         <entry key="app/src/main/res/layout/popular_movies_fragment.xml" value="0.4036458333333333" />
