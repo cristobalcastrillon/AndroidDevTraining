@@ -2,10 +2,16 @@ package com.example.lifecyclesandbox.movie_list
 
 import android.os.Bundle
 import android.util.Log
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.viewpager2.widget.ViewPager2
 import com.example.lifecyclesandbox.R
 
 class MovieListActivity : AppCompatActivity() {
+
+    private lateinit var movieListCollectionAdapter: MovieListCollectionAdapter
+    private lateinit var viewPager: ViewPager2
+    private val NUMBER_OF_PAGES = 2
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -14,12 +20,10 @@ class MovieListActivity : AppCompatActivity() {
         // Debug Logging...
         Log.d(TAG, "onCreate(): " + MovieListActivity::class.java.canonicalName)
 
-        if (savedInstanceState == null) {
-            supportFragmentManager.beginTransaction()
-                    .setReorderingAllowed(true)
-                    .add(R.id.movie_list_fragment_container_view, PopularMoviesFragment::class.java, null)
-                    .commit()
-        }
+        // ViewPager
+        movieListCollectionAdapter = MovieListCollectionAdapter(this, NUMBER_OF_PAGES)
+        viewPager = this.findViewById(R.id.pager)
+        viewPager.adapter = movieListCollectionAdapter
     }
 
     override fun onStart() {

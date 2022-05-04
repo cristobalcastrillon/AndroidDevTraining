@@ -1,6 +1,5 @@
 package com.example.lifecyclesandbox.movie_list
 
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
@@ -13,24 +12,32 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.lifecyclesandbox.R
 import com.example.lifecyclesandbox.movie_detail.MovieDetailActivity
 
-class PopularMoviesFragment : Fragment(R.layout.popular_movies_fragment), MoviesAdapter.OnMovieListener {
-    private val viewModel: MovieListViewModel by viewModels()
+class FavoriteMovieListFragment : Fragment(R.layout.movie_list_fragment),
+    MovieListAdapter.OnMovieListener {
+    private val viewModelFavorite: FavoriteMovieListViewModel by viewModels()
     private lateinit var recyclerView: RecyclerView
-    private val adapter = MoviesAdapter(mutableListOf(), this)
+    private val adapter = MovieListAdapter(mutableListOf(), this)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        // RecyclerView
         recyclerView = view.findViewById(R.id.movie_list_recycler_view)
         setAdapter()
-        viewModel.popularMovies.observe(viewLifecycleOwner) { state ->
+
+        viewModelFavorite.favoriteMovies.observe(viewLifecycleOwner) { state ->
             when (state) {
                 // Error
-                is MovieListState.Failure -> Toast.makeText(context, "An error occurred.", Toast.LENGTH_SHORT).show()
+                is MovieListState.Failure -> Toast.makeText(
+                    context,
+                    "An error occurred.",
+                    Toast.LENGTH_SHORT
+                ).show()
                 // Loading
                 MovieListState.Loading -> Unit
                 // Success
                 is MovieListState.Success -> {
-                    adapter.updateMovieList(state.popularMovieList)
+                    adapter.updateMovieList(state.movieList)
                 }
             }
         }

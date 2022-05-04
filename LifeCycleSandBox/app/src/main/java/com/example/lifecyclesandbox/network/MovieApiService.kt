@@ -1,7 +1,7 @@
 package com.example.lifecyclesandbox.network
 
 import com.example.lifecyclesandbox.movie_detail.model.MovieDetail
-import com.example.lifecyclesandbox.movie_list.model.PopularMovieListAPIResponse
+import com.example.lifecyclesandbox.movie_list.model.MovieListAPIResponse
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET
@@ -17,7 +17,11 @@ private val retrofit = Retrofit.Builder().addConverterFactory(GsonConverterFacto
 
 interface MovieApiService {
     @GET("movie/popular")
-    suspend fun getPopularMovies(@Query("api_key") apiKey : String = API_KEY): PopularMovieListAPIResponse
+    suspend fun getPopularMovies(@Query("api_key") apiKey : String = API_KEY): MovieListAPIResponse
+
+    // TODO: Rewrite the following function to get *user* favorite movies
+    @GET("movie/top_rated")
+    suspend fun getFavoriteMovies(@Query("api_key") apiKey : String = API_KEY): MovieListAPIResponse
 
     @GET("movie/{movie_id}")
     suspend fun getDetail(@Path("movie_id") movieID : String,  @Query("api_key") apiKey : String = API_KEY) : MovieDetail

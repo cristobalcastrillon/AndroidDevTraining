@@ -10,11 +10,11 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class MovieListViewModel : ViewModel() {
+class FavoriteMovieListViewModel : ViewModel() {
 
-    private val _popularMovies = MutableLiveData<MovieListState>()
+    private val _favoriteMovies = MutableLiveData<MovieListState>()
 
-    val popularMovies: LiveData<MovieListState> = _popularMovies
+    val favoriteMovies: LiveData<MovieListState> = _favoriteMovies
 
     /**
      * Load popular movies upon initialization so the movie list can be displayed immediately
@@ -28,12 +28,12 @@ class MovieListViewModel : ViewModel() {
         viewModelScope.launch {
             try {
                 val resultList = withContext(Dispatchers.IO) {
-                   MovieApi.retrofitService.getPopularMovies()
+                   MovieApi.retrofitService.getFavoriteMovies()
                 }
-                _popularMovies.value = MovieListState.Success(resultList.results)
+                _favoriteMovies.value = MovieListState.Success(resultList.results)
             } catch (e: Exception) {
                 Log.e("Failure", e.stackTraceToString())
-                _popularMovies.value = MovieListState.Failure(e)
+                _favoriteMovies.value = MovieListState.Failure(e)
             }
         }
     }

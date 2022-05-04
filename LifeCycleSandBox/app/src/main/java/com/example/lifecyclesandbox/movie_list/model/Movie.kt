@@ -11,6 +11,8 @@ data class Movie(
         val releaseDate: String,
         @SerializedName("overview")
         val overview: String,
+        @SerializedName("popularity")
+        val popularity: String,
         @SerializedName("vote_average")
         val voteAverage: Double,
         @SerializedName("poster_path")
