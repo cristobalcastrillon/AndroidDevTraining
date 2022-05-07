@@ -47,12 +47,7 @@ class MovieListViewModel : ViewModel() {
             try {
                 val favoriteMovieResultList = if (currentList.isNotEmpty()) {
                      withContext(Dispatchers.IO) {
-                        val tempList: MutableList<MovieUI> = mutableListOf()
-                        for (movie in currentList) {
-                            if (movie.favorite)
-                                tempList.add(movie)
-                        }
-                        tempList
+                        currentList.filter { movie -> movie.favorite }
                     }
                 } else emptyList()
 
