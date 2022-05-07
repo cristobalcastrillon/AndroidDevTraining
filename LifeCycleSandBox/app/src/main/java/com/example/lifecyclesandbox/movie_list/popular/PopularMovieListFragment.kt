@@ -1,4 +1,4 @@
-package com.example.lifecyclesandbox.movie_list
+package com.example.lifecyclesandbox.movie_list.popular
 
 import android.content.Intent
 import android.os.Bundle
@@ -15,11 +15,12 @@ import com.example.lifecyclesandbox.movie_list.shared.MovieListViewModel
 import com.example.lifecyclesandbox.movie_list.shared.MovieSharedListAdapter
 import com.example.lifecyclesandbox.movie_list.shared.MovieSharedListState
 
-class FavoriteMovieListFragment : Fragment(R.layout.movie_list_fragment),
+class PopularMovieListFragment : Fragment(R.layout.movie_list_fragment),
     MovieSharedListAdapter.OnMovieListener,
     MovieSharedListAdapter.OnFavListener {
-    // GET Request to TMDb: FavoriteMovieListViewModel version
-    // private val viewModelFavorite: FavoriteMovieListViewModel by viewModels()
+
+    // GET Request to TMDb: PopularMovieListViewModel version
+    // private val viewModelPopular: PopularMovieListViewModel by viewModels()
 
     // GET Request to TMDb: MovieListViewModel version
     private val sharedViewModel : MovieListViewModel by activityViewModels()
@@ -34,9 +35,9 @@ class FavoriteMovieListFragment : Fragment(R.layout.movie_list_fragment),
         recyclerView = view.findViewById(R.id.movie_list_recycler_view)
         setAdapter()
 
-        // GET Request to TMDb: FavoriteMovieListViewModel version
+        // GET Request to TMDb: PopularMovieListViewModel version
         /*
-        viewModelFavorite.favoriteMovies.observe(viewLifecycleOwner) { state ->
+        viewModelPopular.popularMovies.observe(viewLifecycleOwner) { state ->
             when (state) {
                 // Error
                 is MovieListState.Failure -> Toast.makeText(
@@ -54,7 +55,8 @@ class FavoriteMovieListFragment : Fragment(R.layout.movie_list_fragment),
         }
         */
 
-        sharedViewModel.filterFavoriteMovies()
+        // GET Request to TMDb: MovieListViewModel version
+        sharedViewModel.loadPopularMovies()
         sharedViewModel.movieListLiveData.observe(viewLifecycleOwner) { state ->
             when (state) {
                 // Error
@@ -76,7 +78,7 @@ class FavoriteMovieListFragment : Fragment(R.layout.movie_list_fragment),
 
                 // Success
                 is MovieSharedListState.Success -> {
-                    state.favoriteList?.let { adapter.updateMovieList(it) }
+                    adapter.updateMovieList(state.movieList)
                 }
             }
         }
