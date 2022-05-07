@@ -23,7 +23,7 @@ class PopularMovieListFragment : Fragment(R.layout.movie_list_fragment),
     // private val viewModelPopular: PopularMovieListViewModel by viewModels()
 
     // GET Request to TMDb: MovieListViewModel version
-    private val viewModelPopular : MovieListViewModel by activityViewModels()
+    private val sharedViewModel : MovieListViewModel by activityViewModels()
 
     private lateinit var recyclerView: RecyclerView
     private val adapter = MovieSharedListAdapter(mutableListOf(), this, this)
@@ -56,7 +56,8 @@ class PopularMovieListFragment : Fragment(R.layout.movie_list_fragment),
         */
 
         // GET Request to TMDb: MovieListViewModel version
-        viewModelPopular.popularMovies.observe(viewLifecycleOwner) { state ->
+        sharedViewModel.loadPopularMovies()
+        sharedViewModel.movieListLiveData.observe(viewLifecycleOwner) { state ->
             when (state) {
                 // Error
                 is MovieSharedListState.Failure -> Toast.makeText(
@@ -64,8 +65,17 @@ class PopularMovieListFragment : Fragment(R.layout.movie_list_fragment),
                     "An error occurred.",
                     Toast.LENGTH_SHORT
                 ).show()
+
+                // Movie List is empty
+                is MovieSharedListState.EmptyMovieList -> Toast.makeText(
+                    context,
+                    "The requested movie list is empty.",
+                    Toast.LENGTH_SHORT
+                ).show()
+
                 // Loading
                 MovieSharedListState.Loading -> Unit
+
                 // Success
                 is MovieSharedListState.Success -> {
                     adapter.updateMovieList(state.movieList)
@@ -89,12 +99,6 @@ class PopularMovieListFragment : Fragment(R.layout.movie_list_fragment),
     }
 
     override fun onFavButtonClicked(movieUI: MovieListViewModel.MovieUI) {
-        // TODO("Not yet implemented")
-        if(movieUI.favorite){
-            // addToFavoriteMovies()
-        }
-        else{
-            // removeFromFavoriteMovies()
-        }
+        sharedViewModel.updateFavoriteMovie(movieUI)
     }
 }

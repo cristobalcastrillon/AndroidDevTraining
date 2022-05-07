@@ -17,13 +17,12 @@ import com.example.lifecyclesandbox.movie_list.shared.MovieSharedListState
 
 class FavoriteMovieListFragment : Fragment(R.layout.movie_list_fragment),
     MovieSharedListAdapter.OnMovieListener,
-    MovieSharedListAdapter.OnFavListener
-{
+    MovieSharedListAdapter.OnFavListener {
     // GET Request to TMDb: FavoriteMovieListViewModel version
     // private val viewModelFavorite: FavoriteMovieListViewModel by viewModels()
 
     // GET Request to TMDb: MovieListViewModel version
-    private val viewModelFavorite : MovieListViewModel by activityViewModels()
+    private val sharedViewModel : MovieListViewModel by activityViewModels()
 
     private lateinit var recyclerView: RecyclerView
     private val adapter = MovieSharedListAdapter(mutableListOf(), this, this)
@@ -55,8 +54,8 @@ class FavoriteMovieListFragment : Fragment(R.layout.movie_list_fragment),
         }
         */
 
-        // GET Request to TMDb: MovieListViewModel version
-        viewModelFavorite.favoriteMovies.observe(viewLifecycleOwner) { state ->
+        sharedViewModel.filterFavoriteMovies()
+        sharedViewModel.movieListLiveData.observe(viewLifecycleOwner) { state ->
             when (state) {
                 // Error
                 is MovieSharedListState.Failure -> Toast.makeText(
@@ -64,11 +63,20 @@ class FavoriteMovieListFragment : Fragment(R.layout.movie_list_fragment),
                     "An error occurred.",
                     Toast.LENGTH_SHORT
                 ).show()
+
+                // Movie List is empty
+                is MovieSharedListState.EmptyMovieList -> Toast.makeText(
+                    context,
+                    "The requested movie list is empty.",
+                    Toast.LENGTH_SHORT
+                ).show()
+
                 // Loading
                 MovieSharedListState.Loading -> Unit
+
                 // Success
                 is MovieSharedListState.Success -> {
-                    adapter.updateMovieList(state.movieList)
+                    state.favoriteList?.let { adapter.updateMovieList(it) }
                 }
             }
         }
@@ -89,12 +97,6 @@ class FavoriteMovieListFragment : Fragment(R.layout.movie_list_fragment),
     }
 
     override fun onFavButtonClicked(movieUI: MovieListViewModel.MovieUI) {
-        // TODO("Not yet implemented")
-        if(requireView().isSelected){
-            // addToFavoriteMovies()
-        }
-        else{
-            // removeFromFavoriteMovies()
-        }
+        sharedViewModel.updateFavoriteMovie(movieUI)
     }
 }

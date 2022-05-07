@@ -13,31 +13,15 @@ import kotlinx.coroutines.withContext
 class MovieListViewModel : ViewModel() {
 
     // Popular Movies Live Data
-    private val _popularMovies = MutableLiveData<MovieSharedListState>()
+    private val _movieListLiveData = MutableLiveData<MovieSharedListState>()
 
-    val popularMovies: LiveData<MovieSharedListState> = _popularMovies
+    val movieListLiveData: LiveData<MovieSharedListState> = _movieListLiveData
 
-    // Favorite Movies Live Data
-    private val _favoriteMovies = MutableLiveData<MovieSharedListState>()
-
-    val favoriteMovies: LiveData<MovieSharedListState> = _favoriteMovies
-
-    // PopularMovieList data which will be shared for the fragments' LiveData observers
-    private lateinit var popularMoviesResultList: List<MovieUI>
-
-    /**
-     * Load popular movies upon initialization so the movie list can be displayed immediately
-     */
-    init {
-        loadPopularMovies()
-        //loadFavoriteMovies()
-    }
-
-    private fun loadPopularMovies() {
+    fun loadPopularMovies() {
         // Fetch movies from TMDb
         viewModelScope.launch {
             try {
-                popularMoviesResultList = withContext(Dispatchers.IO) {
+                val popularMoviesResultList = withContext(Dispatchers.IO) {
                     MovieApi.retrofitService.getPopularMovies().results.map {
                         MovieUI(it.id,
                         it.title,
@@ -48,32 +32,49 @@ class MovieListViewModel : ViewModel() {
                         it.posterPath)
                     }
                 }
-                _popularMovies.value = MovieSharedListState.Success(popularMoviesResultList)
+                _movieListLiveData.value = MovieSharedListState.Success(popularMoviesResultList)
             } catch (e: Exception) {
                 Log.e("Failure", e.stackTraceToString())
-                _popularMovies.value = MovieSharedListState.Failure(e)
+                _movieListLiveData.value = MovieSharedListState.Failure(e)
             }
         }
     }
 
-    private fun loadFavoriteMovies() {
+    fun filterFavoriteMovies() {
         // Iterate over favoriteMovieList to find where 'favorite' boolean variable is set 'true'
+        val currentList = (movieListLiveData.value as? MovieSharedListState.Success)?.movieList ?: emptyList()
         viewModelScope.launch {
             try {
-                val favoriteMovieResultList = withContext(Dispatchers.IO) {
-                    lateinit var tempList : ArrayList<MovieUI>
-                    for(movie in popularMoviesResultList) {
-                        if(movie.favorite)
-                            tempList.add(movie)
+                val favoriteMovieResultList = if (currentList.isNotEmpty()) {
+                     withContext(Dispatchers.IO) {
+                        val tempList: MutableList<MovieUI> = mutableListOf()
+                        for (movie in currentList) {
+                            if (movie.favorite)
+                                tempList.add(movie)
+                        }
+                        tempList
                     }
-                    tempList
-                }
-                _favoriteMovies.value = MovieSharedListState.Success(favoriteMovieResultList)
-            } catch (e: Exception) {
+                } else emptyList()
+
+                if(favoriteMovieResultList.isEmpty())
+                    _movieListLiveData.value = MovieSharedListState.EmptyMovieList
+                else
+                    _movieListLiveData.value = MovieSharedListState.Success(currentList, favoriteList = favoriteMovieResultList)
+            }
+            catch (e: Exception) {
                 Log.e("Failure", e.stackTraceToString())
-                _popularMovies.value = MovieSharedListState.Failure(e)
+                _movieListLiveData.value = MovieSharedListState.Failure(e)
             }
         }
+    }
+
+    fun updateFavoriteMovie(movieUI: MovieUI) {
+        val currentList = (movieListLiveData.value as? MovieSharedListState.Success)?.movieList?.map {
+            if(it.id == movieUI.id) movieUI else it
+        } ?: emptyList()
+        _movieListLiveData.value = MovieSharedListState.Success(
+            currentList , favoriteList = currentList.filter { it.favorite }
+        )
     }
 
 

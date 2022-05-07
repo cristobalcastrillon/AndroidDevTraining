@@ -43,12 +43,7 @@ class MovieSharedListAdapter(
         holder.movieOverviewText.text = movieOverview
         holder.movieRatingText.text = movieRating
 
-        if(movieList[position].favorite){
-            holder.favButton.setImageResource(R.drawable.ic_baseline_star_24)
-        }
-        else{
-            holder.favButton.setImageResource(R.drawable.ic_baseline_star_border_24)
-        }
+        drawStarIconByFavorite(movieList, position, holder)
 
         holder.itemView.setOnClickListener {
             onMovieListener.onMovieClicked(movieID)
@@ -56,12 +51,7 @@ class MovieSharedListAdapter(
 
         holder.favButton.setOnClickListener {
             movieList[position].favorite = !movieList[position].favorite
-            if(movieList[position].favorite){
-                holder.favButton.setImageResource(R.drawable.ic_baseline_star_24)
-            }
-            else{
-                holder.favButton.setImageResource(R.drawable.ic_baseline_star_border_24)
-            }
+            drawStarIconByFavorite(movieList, position, holder)
             onFavListener.onFavButtonClicked(movieList[position])
         }
     }
@@ -82,6 +72,15 @@ class MovieSharedListAdapter(
 
     interface OnFavListener {
         fun onFavButtonClicked(movieUI: MovieListViewModel.MovieUI)
+    }
+
+    private fun drawStarIconByFavorite(movieList: MutableList<MovieListViewModel.MovieUI>, position: Int, holder : ViewHolder): Unit {
+        if(movieList[position].favorite){
+            holder.favButton.setImageResource(R.drawable.ic_baseline_star_24)
+        }
+        else{
+            holder.favButton.setImageResource(R.drawable.ic_baseline_star_border_24)
+        }
     }
 
 }
