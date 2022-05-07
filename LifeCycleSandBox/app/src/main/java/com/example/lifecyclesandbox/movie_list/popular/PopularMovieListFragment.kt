@@ -19,9 +19,6 @@ class PopularMovieListFragment : Fragment(R.layout.movie_list_fragment),
     MovieSharedListAdapter.OnMovieListener,
     MovieSharedListAdapter.OnFavListener {
 
-    // GET Request to TMDb: PopularMovieListViewModel version
-    // private val viewModelPopular: PopularMovieListViewModel by viewModels()
-
     // GET Request to TMDb: MovieListViewModel version
     private val sharedViewModel : MovieListViewModel by activityViewModels()
 
@@ -34,26 +31,6 @@ class PopularMovieListFragment : Fragment(R.layout.movie_list_fragment),
         // RecyclerView
         recyclerView = view.findViewById(R.id.movie_list_recycler_view)
         setAdapter()
-
-        // GET Request to TMDb: PopularMovieListViewModel version
-        /*
-        viewModelPopular.popularMovies.observe(viewLifecycleOwner) { state ->
-            when (state) {
-                // Error
-                is MovieListState.Failure -> Toast.makeText(
-                    context,
-                    "An error occurred.",
-                    Toast.LENGTH_SHORT
-                ).show()
-                // Loading
-                MovieListState.Loading -> Unit
-                // Success
-                is MovieListState.Success -> {
-                    adapter.updateMovieList(state.movieList)
-                }
-            }
-        }
-        */
 
         // GET Request to TMDb: MovieListViewModel version
         sharedViewModel.loadPopularMovies()

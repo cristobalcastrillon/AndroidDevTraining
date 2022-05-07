@@ -18,8 +18,6 @@ import com.example.lifecyclesandbox.movie_list.shared.MovieSharedListState
 class FavoriteMovieListFragment : Fragment(R.layout.movie_list_fragment),
     MovieSharedListAdapter.OnMovieListener,
     MovieSharedListAdapter.OnFavListener {
-    // GET Request to TMDb: FavoriteMovieListViewModel version
-    // private val viewModelFavorite: FavoriteMovieListViewModel by viewModels()
 
     // GET Request to TMDb: MovieListViewModel version
     private val sharedViewModel : MovieListViewModel by activityViewModels()
@@ -33,26 +31,6 @@ class FavoriteMovieListFragment : Fragment(R.layout.movie_list_fragment),
         // RecyclerView
         recyclerView = view.findViewById(R.id.movie_list_recycler_view)
         setAdapter()
-
-        // GET Request to TMDb: FavoriteMovieListViewModel version
-        /*
-        viewModelFavorite.favoriteMovies.observe(viewLifecycleOwner) { state ->
-            when (state) {
-                // Error
-                is MovieListState.Failure -> Toast.makeText(
-                    context,
-                    "An error occurred.",
-                    Toast.LENGTH_SHORT
-                ).show()
-                // Loading
-                MovieListState.Loading -> Unit
-                // Success
-                is MovieListState.Success -> {
-                    adapter.updateMovieList(state.movieList)
-                }
-            }
-        }
-        */
 
         sharedViewModel.filterFavoriteMovies()
         sharedViewModel.movieListLiveData.observe(viewLifecycleOwner) { state ->
