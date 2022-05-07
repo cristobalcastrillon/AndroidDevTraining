@@ -78,7 +78,7 @@ class MovieListViewModel : ViewModel() {
         val title: String,
         val releaseDate: String,
         val overview: String,
-        val popularity: String,
+        val popularity: Double,
         val voteAverage: Double,
         val posterPath: String,
         var favorite: Boolean = false

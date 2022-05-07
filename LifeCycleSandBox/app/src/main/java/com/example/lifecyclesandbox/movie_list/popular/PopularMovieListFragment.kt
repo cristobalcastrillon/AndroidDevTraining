@@ -21,8 +21,11 @@ class PopularMovieListFragment : Fragment(R.layout.movie_list_fragment),
 
     // GET Request to TMDb: MovieListViewModel version
     private val sharedViewModel : MovieListViewModel by activityViewModels()
-
+    
+    // RecyclerView
     private lateinit var recyclerView: RecyclerView
+    
+    // RecyclerView Adapter
     private val adapter = MovieSharedListAdapter(mutableListOf(), this, this)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

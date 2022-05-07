@@ -41,7 +41,7 @@ class MovieSharedListAdapter(
         Picasso.get().load(moviePosterPath).into(holder.moviePoster)
         holder.movieTitleText.text = movieTitle
         holder.movieOverviewText.text = movieOverview
-        holder.movieRatingText.text = movieRating
+        holder.movieRatingText.text = movieRating.toString()
 
         drawStarIconByFavorite(movieList, position, holder)
 
