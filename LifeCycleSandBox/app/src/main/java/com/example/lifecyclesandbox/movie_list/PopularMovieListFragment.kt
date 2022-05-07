@@ -56,7 +56,7 @@ class PopularMovieListFragment : Fragment(R.layout.movie_list_fragment),
         */
 
         // GET Request to TMDb: MovieListViewModel version
-        viewModelPopular.favoriteMovies.observe(viewLifecycleOwner) { state ->
+        viewModelPopular.popularMovies.observe(viewLifecycleOwner) { state ->
             when (state) {
                 // Error
                 is MovieSharedListState.Failure -> Toast.makeText(
