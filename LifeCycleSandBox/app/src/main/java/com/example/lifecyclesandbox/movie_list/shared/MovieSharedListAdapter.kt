@@ -8,7 +8,6 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.lifecyclesandbox.R
-import com.example.lifecyclesandbox.movie_list.MovieListViewModel
 import com.example.lifecyclesandbox.network.IMAGE_BASE_URL
 import com.squareup.picasso.Picasso
 
@@ -71,9 +70,9 @@ class MovieSharedListAdapter(
         return movieList.size
     }
 
-    fun updateMovieList(popularMovieList: List<MovieListViewModel.MovieUI>) {
-        movieList.clear()
-        movieList.addAll(popularMovieList)
+    fun updateMovieList(movieList: List<MovieListViewModel.MovieUI>) {
+        this.movieList.clear()
+        this.movieList.addAll(movieList)
         notifyDataSetChanged()
     }
 

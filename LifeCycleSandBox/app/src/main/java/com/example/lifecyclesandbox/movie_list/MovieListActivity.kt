@@ -2,11 +2,11 @@ package com.example.lifecyclesandbox.movie_list
 
 import android.os.Bundle
 import android.util.Log
-import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.viewpager2.widget.ViewPager2
 import com.example.lifecyclesandbox.R
+import com.example.lifecyclesandbox.movie_list.shared.MovieListViewModel
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 
@@ -14,7 +14,6 @@ class MovieListActivity : AppCompatActivity() {
 
     private lateinit var movieListCollectionAdapter: MovieListCollectionAdapter
     private lateinit var viewPager: ViewPager2
-    private val NUMBER_OF_PAGES = 2
     private val movieListViewModel : MovieListViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -24,17 +23,16 @@ class MovieListActivity : AppCompatActivity() {
 
         // TODO: Find out why pages are behaving like that (Favorite loads up info. loaded on Popular fragment, but does not update whenever info displayed on Popular changes).
 
-        // ViewPager
-        movieListCollectionAdapter = MovieListCollectionAdapter(this, NUMBER_OF_PAGES)
-        viewPager = this.findViewById(R.id.pager)
-        viewPager.adapter = movieListCollectionAdapter
-
         // Tab titles
         val tabTitles = arrayOf("popular", "favorite")
 
+        // ViewPager
+        movieListCollectionAdapter = MovieListCollectionAdapter(this, tabTitles.size)
+        viewPager = this.findViewById(R.id.pager)
+        viewPager.adapter = movieListCollectionAdapter
+
         val tabLayout = findViewById<TabLayout>(R.id.tab_layout)
         TabLayoutMediator(tabLayout, viewPager) { tab, position ->
-            //To get the first name of doppelganger celebrities
             tab.text = tabTitles[position]
         }.attach()
     }

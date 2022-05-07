@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.lifecyclesandbox.R
 import com.example.lifecyclesandbox.movie_detail.MovieDetailActivity
+import com.example.lifecyclesandbox.movie_list.shared.MovieListViewModel
 import com.example.lifecyclesandbox.movie_list.shared.MovieSharedListAdapter
 import com.example.lifecyclesandbox.movie_list.shared.MovieSharedListState
 
@@ -18,10 +19,12 @@ class PopularMovieListFragment : Fragment(R.layout.movie_list_fragment),
     MovieSharedListAdapter.OnMovieListener,
     MovieSharedListAdapter.OnFavListener {
 
-    // GET Request to TMDb
+    // GET Request to TMDb: PopularMovieListViewModel version
     // private val viewModelPopular: PopularMovieListViewModel by viewModels()
 
+    // GET Request to TMDb: MovieListViewModel version
     private val viewModelPopular : MovieListViewModel by activityViewModels()
+
     private lateinit var recyclerView: RecyclerView
     private val adapter = MovieSharedListAdapter(mutableListOf(), this, this)
 
@@ -32,7 +35,7 @@ class PopularMovieListFragment : Fragment(R.layout.movie_list_fragment),
         recyclerView = view.findViewById(R.id.movie_list_recycler_view)
         setAdapter()
 
-        // GET Request to TMDb
+        // GET Request to TMDb: PopularMovieListViewModel version
         /*
         viewModelPopular.popularMovies.observe(viewLifecycleOwner) { state ->
             when (state) {
@@ -52,7 +55,8 @@ class PopularMovieListFragment : Fragment(R.layout.movie_list_fragment),
         }
         */
 
-        viewModelPopular.movies.observe(viewLifecycleOwner) { state ->
+        // GET Request to TMDb: MovieListViewModel version
+        viewModelPopular.favoriteMovies.observe(viewLifecycleOwner) { state ->
             when (state) {
                 // Error
                 is MovieSharedListState.Failure -> Toast.makeText(

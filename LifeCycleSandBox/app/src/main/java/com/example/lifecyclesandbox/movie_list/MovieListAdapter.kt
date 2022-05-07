@@ -8,7 +8,6 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.lifecyclesandbox.R
-import com.example.lifecyclesandbox.movie_list.MovieListViewModel
 import com.example.lifecyclesandbox.movie_list.model.Movie
 import com.example.lifecyclesandbox.network.IMAGE_BASE_URL
 import com.squareup.picasso.Picasso
