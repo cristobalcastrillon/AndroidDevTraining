@@ -5,6 +5,9 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.lifecyclesandbox.db.LocalDataSource
+import com.example.lifecyclesandbox.db.MovieData
+import com.example.lifecyclesandbox.movie_list.shared.MovieSharedListState.Success
 import com.example.lifecyclesandbox.network.MovieApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -17,6 +20,9 @@ class MovieListViewModel : ViewModel() {
 
     val movieListLiveData: LiveData<MovieSharedListState> = _movieListLiveData
 
+    /**
+     * Function that makes a GET request to TMDb Web API, and maps incoming object from JSON to Movie and subsequently to MovieUI.
+     */
     fun loadPopularMovies() {
         // Fetch movies from TMDb
         viewModelScope.launch {
@@ -32,7 +38,7 @@ class MovieListViewModel : ViewModel() {
                         it.posterPath)
                     }
                 }
-                _movieListLiveData.value = MovieSharedListState.Success(popularMoviesResultList)
+                _movieListLiveData.value = Success(popularMoviesResultList)
             } catch (e: Exception) {
                 Log.e("Failure", e.stackTraceToString())
                 _movieListLiveData.value = MovieSharedListState.Failure(e)
@@ -40,21 +46,19 @@ class MovieListViewModel : ViewModel() {
         }
     }
 
+    /**
+     * Favorite movies should be retrieved from local DB.
+     */
     fun filterFavoriteMovies() {
-        // Iterate over favoriteMovieList to find where 'favorite' boolean variable is set 'true'
-        val currentList = (movieListLiveData.value as? MovieSharedListState.Success)?.movieList ?: emptyList()
+        val popularMovieList = (movieListLiveData.value as? Success)?.movieList
         viewModelScope.launch {
-            try {
-                val favoriteMovieResultList = if (currentList.isNotEmpty()) {
-                     withContext(Dispatchers.IO) {
-                        currentList.filter { movie -> movie.favorite }
+            try{
+                val favoriteMovieResultList = withContext(Dispatchers.IO) {
+                    LocalDataSource().db.movieDAO().loadAllFavorites().map {
+                        mapFromDBModel(it)
                     }
-                } else emptyList()
-
-                if(favoriteMovieResultList.isEmpty())
-                    _movieListLiveData.value = MovieSharedListState.EmptyMovieList
-                else
-                    _movieListLiveData.value = MovieSharedListState.Success(currentList, favoriteList = favoriteMovieResultList)
+                }
+                _movieListLiveData.value = Success(popularMovieList, favoriteList = favoriteMovieResultList)
             }
             catch (e: Exception) {
                 Log.e("Failure", e.stackTraceToString())
@@ -63,16 +67,47 @@ class MovieListViewModel : ViewModel() {
         }
     }
 
+    /**
+     * Movies tagged as favorite should be saved to the local DB,
+     * in order to be retrieved whenever the user switches to the FavoriteMovieListFragment,
+     * as well as when the parent MovieListActivity ceases to exist.
+     */
     fun updateFavoriteMovie(movieUI: MovieUI) {
-        val currentList = (movieListLiveData.value as? MovieSharedListState.Success)?.movieList?.map {
+        val currentList = (movieListLiveData.value as? Success)?.movieList?.map {
             if(it.id == movieUI.id) movieUI else it
         } ?: emptyList()
-        _movieListLiveData.value = MovieSharedListState.Success(
+        _movieListLiveData.value = Success(
             currentList , favoriteList = currentList.filter { it.favorite }
         )
+
+        // Deleting favorite from the database
+        if(movieUI.favorite){
+            viewModelScope.launch{
+                withContext(Dispatchers.IO) {
+                    // Delete Movie with the same ID in Local DB
+                    LocalDataSource().db.movieDAO().deleteByID(movieUI.id)
+                }
+            }
+        }
+        // Writing to the database
+        else {
+            viewModelScope.launch{
+                withContext(Dispatchers.IO) {
+                    // Delete Movie with the same ID in Local DB
+                    LocalDataSource().db.movieDAO().deleteByID(movieUI.id)
+                    // Insert new MovieUI
+                    LocalDataSource().db.movieDAO().insertAll(
+                        movieUI.mapToDBModel()
+                    )
+                }
+            }
+        }
     }
 
 
+    /**
+     * Helper Data Class which holds data to be shown on the GUI.
+     */
     data class MovieUI (
         val id: Long,
         val title: String,
@@ -83,4 +118,31 @@ class MovieListViewModel : ViewModel() {
         val posterPath: String,
         var favorite: Boolean = false
         )
+}
+
+// MovieUI Extension Function
+fun MovieListViewModel.MovieUI.mapToDBModel(): MovieData {
+    return MovieData(
+        id,
+        title,
+        releaseDate,
+        overview,
+        popularity,
+        voteAverage,
+        posterPath,
+        favorite
+    )
+}
+
+fun mapFromDBModel(movieData : MovieData) : MovieListViewModel.MovieUI {
+    return MovieListViewModel.MovieUI(
+        movieData.id,
+        movieData.title,
+        movieData.releaseDate,
+        movieData.overview,
+        movieData.popularity,
+        movieData.voteAverage,
+        movieData.posterPath,
+        movieData.favorite
+    )
 }

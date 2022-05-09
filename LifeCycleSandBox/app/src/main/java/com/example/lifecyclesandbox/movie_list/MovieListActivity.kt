@@ -3,8 +3,10 @@ package com.example.lifecyclesandbox.movie_list
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
+import androidx.room.Room
 import androidx.viewpager2.widget.ViewPager2
 import com.example.lifecyclesandbox.R
+import com.example.lifecyclesandbox.db.MovieLocalDatabase
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 

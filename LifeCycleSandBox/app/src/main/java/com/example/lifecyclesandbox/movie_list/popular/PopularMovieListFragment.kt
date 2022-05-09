@@ -9,7 +9,9 @@ import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.room.Room
 import com.example.lifecyclesandbox.R
+import com.example.lifecyclesandbox.db.MovieLocalDatabase
 import com.example.lifecyclesandbox.movie_detail.MovieDetailActivity
 import com.example.lifecyclesandbox.movie_list.shared.MovieListViewModel
 import com.example.lifecyclesandbox.movie_list.shared.MovieSharedListAdapter
@@ -19,9 +21,8 @@ class PopularMovieListFragment : Fragment(R.layout.movie_list_fragment),
     MovieSharedListAdapter.OnMovieListener,
     MovieSharedListAdapter.OnFavListener {
 
-    // GET Request to TMDb: MovieListViewModel version
     private val sharedViewModel : MovieListViewModel by activityViewModels()
-    
+
     // RecyclerView
     private lateinit var recyclerView: RecyclerView
     
@@ -35,7 +36,6 @@ class PopularMovieListFragment : Fragment(R.layout.movie_list_fragment),
         recyclerView = view.findViewById(R.id.movie_list_recycler_view)
         setAdapter()
 
-        // GET Request to TMDb: MovieListViewModel version
         sharedViewModel.loadPopularMovies()
         sharedViewModel.movieListLiveData.observe(viewLifecycleOwner) { state ->
             when (state) {
@@ -46,19 +46,12 @@ class PopularMovieListFragment : Fragment(R.layout.movie_list_fragment),
                     Toast.LENGTH_SHORT
                 ).show()
 
-                // Movie List is empty
-                is MovieSharedListState.EmptyMovieList -> Toast.makeText(
-                    context,
-                    "The requested movie list is empty.",
-                    Toast.LENGTH_SHORT
-                ).show()
-
                 // Loading
                 MovieSharedListState.Loading -> Unit
 
                 // Success
                 is MovieSharedListState.Success -> {
-                    adapter.updateMovieList(state.movieList)
+                    state.movieList?.let { adapter.updateMovieList(it) }
                 }
             }
         }

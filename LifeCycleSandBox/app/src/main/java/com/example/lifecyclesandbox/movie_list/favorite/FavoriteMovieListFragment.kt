@@ -18,8 +18,7 @@ import com.example.lifecyclesandbox.movie_list.shared.MovieSharedListState
 class FavoriteMovieListFragment : Fragment(R.layout.movie_list_fragment),
     MovieSharedListAdapter.OnMovieListener,
     MovieSharedListAdapter.OnFavListener {
-
-    // GET Request to TMDb: MovieListViewModel version
+    
     private val sharedViewModel : MovieListViewModel by activityViewModels()
 
     private lateinit var recyclerView: RecyclerView
@@ -42,19 +41,14 @@ class FavoriteMovieListFragment : Fragment(R.layout.movie_list_fragment),
                     Toast.LENGTH_SHORT
                 ).show()
 
-                // Movie List is empty
-                is MovieSharedListState.EmptyMovieList -> Toast.makeText(
-                    context,
-                    "The requested movie list is empty.",
-                    Toast.LENGTH_SHORT
-                ).show()
-
                 // Loading
                 MovieSharedListState.Loading -> Unit
 
                 // Success
                 is MovieSharedListState.Success -> {
-                    state.favoriteList?.let { adapter.updateMovieList(it) }
+                    state.favoriteList?.let {
+                        adapter.updateMovieList(it)
+                    } ?: Toast.makeText(context, "The requested movie list is empty.", Toast.LENGTH_SHORT)
                 }
             }
         }
