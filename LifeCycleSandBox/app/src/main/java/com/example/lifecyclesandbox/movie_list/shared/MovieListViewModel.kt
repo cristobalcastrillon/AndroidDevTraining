@@ -27,8 +27,17 @@ class MovieListViewModel : ViewModel() {
         // Fetch movies from TMDb
         viewModelScope.launch {
             try {
-                val popularMoviesResultList = withContext(Dispatchers.IO) {
-                    MovieApi.retrofitService.getPopularMovies().results.map {
+                val popularMoviesResultList : List<MovieUI>
+                 withContext(Dispatchers.IO) {
+
+                    val favoriteMoviesResultList = LocalDataSource().db.movieDAO().loadAllFavorites().map {
+                        mapFromDBModel(it)
+                    }
+                    val favIDs = favoriteMoviesResultList.map{
+                         favMovie -> favMovie.id
+                    }
+
+                    popularMoviesResultList = MovieApi.retrofitService.getPopularMovies().results.map {
                         MovieUI(
                             it.id,
                             it.title,
@@ -36,9 +45,12 @@ class MovieListViewModel : ViewModel() {
                             it.overview,
                             it.popularity,
                             it.voteAverage,
-                            it.posterPath
+                            it.posterPath,
+                            favIDs.contains(it.id)
                         )
                     }
+
+                    mergeLists(favoriteMoviesResultList, popularMoviesResultList)
                 }
                 _movieListLiveData.value = Success(popularMoviesResultList, emptyList())
             } catch (e: Exception) {
@@ -165,4 +177,8 @@ fun mapFromDBModel(movieData: MovieData): MovieListViewModel.MovieUI {
         movieData.posterPath,
         movieData.favorite
     )
+}
+
+fun mergeLists(popularMoviesResultList: List<MovieListViewModel.MovieUI>, favoriteMoviesResultList: List<MovieListViewModel.MovieUI>) {
+
 }
