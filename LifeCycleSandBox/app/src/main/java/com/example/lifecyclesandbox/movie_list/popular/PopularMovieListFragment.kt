@@ -51,7 +51,7 @@ class PopularMovieListFragment : Fragment(R.layout.movie_list_fragment),
 
                 // Success
                 is MovieSharedListState.Success -> {
-                    state.movieList?.let { adapter.updateMovieList(it) }
+                    adapter.updateMovieList(state.movieList)
                 }
             }
         }

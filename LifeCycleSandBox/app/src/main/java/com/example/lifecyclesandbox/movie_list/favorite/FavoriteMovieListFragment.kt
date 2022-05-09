@@ -31,7 +31,7 @@ class FavoriteMovieListFragment : Fragment(R.layout.movie_list_fragment),
         recyclerView = view.findViewById(R.id.movie_list_recycler_view)
         setAdapter()
 
-        sharedViewModel.filterFavoriteMovies()
+        sharedViewModel.loadFavoriteMovies()
         sharedViewModel.movieListLiveData.observe(viewLifecycleOwner) { state ->
             when (state) {
                 // Error
@@ -46,9 +46,11 @@ class FavoriteMovieListFragment : Fragment(R.layout.movie_list_fragment),
 
                 // Success
                 is MovieSharedListState.Success -> {
-                    state.favoriteList?.let {
-                        adapter.updateMovieList(it)
-                    } ?: Toast.makeText(context, "The requested movie list is empty.", Toast.LENGTH_SHORT)
+                    if(state.favoriteList.isEmpty()){
+                        Toast.makeText(context, "Empty.", Toast.LENGTH_SHORT)
+                    }
+
+                    adapter.updateMovieList(state.favoriteList)
                 }
             }
         }

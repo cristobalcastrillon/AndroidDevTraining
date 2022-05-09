@@ -38,7 +38,7 @@ class MovieListViewModel : ViewModel() {
                         it.posterPath)
                     }
                 }
-                _movieListLiveData.value = Success(popularMoviesResultList)
+                _movieListLiveData.value = Success(popularMoviesResultList, emptyList())
             } catch (e: Exception) {
                 Log.e("Failure", e.stackTraceToString())
                 _movieListLiveData.value = MovieSharedListState.Failure(e)
@@ -49,8 +49,8 @@ class MovieListViewModel : ViewModel() {
     /**
      * Favorite movies should be retrieved from local DB.
      */
-    fun filterFavoriteMovies() {
-        val popularMovieList = (movieListLiveData.value as? Success)?.movieList
+    fun loadFavoriteMovies() {
+        val popularMovieList = (movieListLiveData.value as? Success)?.movieList!!
         viewModelScope.launch {
             try{
                 val favoriteMovieResultList = withContext(Dispatchers.IO) {
@@ -73,24 +73,8 @@ class MovieListViewModel : ViewModel() {
      * as well as when the parent MovieListActivity ceases to exist.
      */
     fun updateFavoriteMovie(movieUI: MovieUI) {
-        val currentList = (movieListLiveData.value as? Success)?.movieList?.map {
-            if(it.id == movieUI.id) movieUI else it
-        } ?: emptyList()
-        _movieListLiveData.value = Success(
-            currentList , favoriteList = currentList.filter { it.favorite }
-        )
-
-        // Deleting favorite from the database
+        // Writing to the database if favorite is true (user wants to add it to favorites)
         if(movieUI.favorite){
-            viewModelScope.launch{
-                withContext(Dispatchers.IO) {
-                    // Delete Movie with the same ID in Local DB
-                    LocalDataSource().db.movieDAO().deleteByID(movieUI.id)
-                }
-            }
-        }
-        // Writing to the database
-        else {
             viewModelScope.launch{
                 withContext(Dispatchers.IO) {
                     // Delete Movie with the same ID in Local DB
@@ -102,6 +86,22 @@ class MovieListViewModel : ViewModel() {
                 }
             }
         }
+        // Deleting favorite from the database if favorite is false (user wants to remove it from favorites)
+        else{
+            viewModelScope.launch{
+                withContext(Dispatchers.IO) {
+                    // Delete Movie with the same ID in Local DB
+                    LocalDataSource().db.movieDAO().deleteByID(movieUI.id)
+                }
+            }
+        }
+
+        val currentList = (movieListLiveData.value as? Success)?.movieList?.map {
+            if(it.id == movieUI.id) movieUI else it
+        } ?: emptyList()
+        _movieListLiveData.value = Success(
+            currentList , favoriteList = currentList.filter { it.favorite }
+        )
     }
 
 
