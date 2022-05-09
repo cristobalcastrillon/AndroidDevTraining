@@ -29,13 +29,15 @@ class MovieListViewModel : ViewModel() {
             try {
                 val popularMoviesResultList = withContext(Dispatchers.IO) {
                     MovieApi.retrofitService.getPopularMovies().results.map {
-                        MovieUI(it.id,
-                        it.title,
-                        it.releaseDate,
-                        it.overview,
-                        it.popularity,
-                        it.voteAverage,
-                        it.posterPath)
+                        MovieUI(
+                            it.id,
+                            it.title,
+                            it.releaseDate,
+                            it.overview,
+                            it.popularity,
+                            it.voteAverage,
+                            it.posterPath
+                        )
                     }
                 }
                 _movieListLiveData.value = Success(popularMoviesResultList, emptyList())
@@ -52,15 +54,15 @@ class MovieListViewModel : ViewModel() {
     fun loadFavoriteMovies() {
         val popularMovieList = (movieListLiveData.value as? Success)?.movieList!!
         viewModelScope.launch {
-            try{
+            try {
                 val favoriteMovieResultList = withContext(Dispatchers.IO) {
                     LocalDataSource().db.movieDAO().loadAllFavorites().map {
                         mapFromDBModel(it)
                     }
                 }
-                _movieListLiveData.value = Success(popularMovieList, favoriteList = favoriteMovieResultList)
-            }
-            catch (e: Exception) {
+                _movieListLiveData.value =
+                    Success(popularMovieList, favoriteList = favoriteMovieResultList)
+            } catch (e: Exception) {
                 Log.e("Failure", e.stackTraceToString())
                 _movieListLiveData.value = MovieSharedListState.Failure(e)
             }
@@ -73,42 +75,60 @@ class MovieListViewModel : ViewModel() {
      * as well as when the parent MovieListActivity ceases to exist.
      */
     fun updateFavoriteMovie(movieUI: MovieUI) {
-        // Writing to the database if favorite is true (user wants to add it to favorites)
-        if(movieUI.favorite){
-            viewModelScope.launch{
-                withContext(Dispatchers.IO) {
+
+        var favoriteMoviesResultList: MutableList<MovieUI> = mutableListOf()
+        var popularMoviesResultList: List<MovieUI> = emptyList()
+
+        viewModelScope.launch {
+            withContext(Dispatchers.IO) {
+                // Writing to the database if favorite is true (user wants to add it to favorites)
+                if (movieUI.favorite) {
+
                     // Delete Movie with the same ID in Local DB
                     LocalDataSource().db.movieDAO().deleteByID(movieUI.id)
                     // Insert new MovieUI
                     LocalDataSource().db.movieDAO().insertAll(
                         movieUI.mapToDBModel()
                     )
+
+                    favoriteMoviesResultList =
+                        (movieListLiveData.value as? Success)?.favoriteList?.toMutableList()
+                            ?: mutableListOf()
+                    popularMoviesResultList =
+                        (movieListLiveData.value as? Success)?.movieList?.map {
+                            if (it.id == movieUI.id) {
+                                favoriteMoviesResultList.add(movieUI)
+                                movieUI
+                            } else it
+                        } ?: emptyList()
                 }
-            }
-        }
-        // Deleting favorite from the database if favorite is false (user wants to remove it from favorites)
-        else{
-            viewModelScope.launch{
-                withContext(Dispatchers.IO) {
+                // Deleting favorite from the database if favorite is false (user wants to remove it from favorites)
+                else {
                     // Delete Movie with the same ID in Local DB
                     LocalDataSource().db.movieDAO().deleteByID(movieUI.id)
+
+                    favoriteMoviesResultList =
+                        (movieListLiveData.value as? Success)?.favoriteList?.toMutableList()
+                            ?: mutableListOf()
+                    popularMoviesResultList =
+                        (movieListLiveData.value as? Success)?.movieList?.map {
+                            if (it.id == movieUI.id) {
+                                favoriteMoviesResultList.remove(movieUI)
+                                movieUI
+                            } else it
+                        } ?: emptyList()
                 }
             }
+            _movieListLiveData.value = Success(
+                popularMoviesResultList, favoriteList = favoriteMoviesResultList
+            )
         }
-
-        val currentList = (movieListLiveData.value as? Success)?.movieList?.map {
-            if(it.id == movieUI.id) movieUI else it
-        } ?: emptyList()
-        _movieListLiveData.value = Success(
-            currentList , favoriteList = currentList.filter { it.favorite }
-        )
     }
-
 
     /**
      * Helper Data Class which holds data to be shown on the GUI.
      */
-    data class MovieUI (
+    data class MovieUI(
         val id: Long,
         val title: String,
         val releaseDate: String,
@@ -117,7 +137,7 @@ class MovieListViewModel : ViewModel() {
         val voteAverage: Double,
         val posterPath: String,
         var favorite: Boolean = false
-        )
+    )
 }
 
 // MovieUI Extension Function
@@ -134,7 +154,7 @@ fun MovieListViewModel.MovieUI.mapToDBModel(): MovieData {
     )
 }
 
-fun mapFromDBModel(movieData : MovieData) : MovieListViewModel.MovieUI {
+fun mapFromDBModel(movieData: MovieData): MovieListViewModel.MovieUI {
     return MovieListViewModel.MovieUI(
         movieData.id,
         movieData.title,
